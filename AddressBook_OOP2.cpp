@@ -1,9 +1,14 @@
 ﻿#pragma once
-#include <iostream>
 #include "pch.h"
+#include "CUserInterface.h"
+#include "CLinkedList.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    CLinkedList myList;
+    CUserInterface myUI(myList);
+
+    myUI.run();
+    return 0;
 }
 
