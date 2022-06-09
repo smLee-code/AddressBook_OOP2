@@ -15,22 +15,22 @@ CLinkedList::~CLinkedList()
 }
 
 
-CLinkedList::USERDATA* CLinkedList::getFirst()
+const CUserData* CLinkedList::getFirst()
 {
-    return m_Head.pNext;
+    return m_Head.getNext();
 }
 
 
-CLinkedList::USERDATA* CLinkedList::findNode(char* pszName)
+const CUserData* CLinkedList::findNode(char* pszName)
 {
-    USERDATA* pTmp = getFirst();
+    const CUserData* pTmp = m_Head.getNext();
 
     while (pTmp != nullptr) 
     {
-        if (strcmp(pTmp->szName, pszName) == 0)
+        if (strcmp(pTmp->getName(), pszName) == 0)
             return pTmp;
             
-        pTmp = pTmp->pNext;
+        pTmp = moveNext(pTmp);
     }
 
     return nullptr;
@@ -39,37 +39,49 @@ CLinkedList::USERDATA* CLinkedList::findNode(char* pszName)
 
 int CLinkedList::addNewNode(char* pszName, char* pszPhone)
 {
-    USERDATA* pNewUser = nullptr;
+    CUserData* pNewUser = nullptr;
 
     if (findNode(pszName) != nullptr)
         return 0;
 
-    pNewUser = (USERDATA*)malloc(sizeof(USERDATA));
-    memset(pNewUser, 0, sizeof(USERDATA));
+    pNewUser = new CUserData();
 
-    sprintf_s(pNewUser->szName, sizeof(pNewUser->szName), "%s", pszName);
-    sprintf_s(pNewUser->szPhone, sizeof(pNewUser->szPhone), "%s", pszPhone);
+    pNewUser->setName(pszName);
+    pNewUser->setPhone(pszPhone);
 
-    pNewUser->pNext = m_Head.pNext;
+    pNewUser->pNext = (CUserData*)m_Head.getNext();
     m_Head.pNext = pNewUser;
-
     return 1;
 }
 
+int CLinkedList::addNewNode(FILE* fp)
+{
+    CUserData* pNewData = new CUserData;
+
+    if (!pNewData->read(fp))
+    {
+        delete pNewData;
+        return 0;   
+    }
+
+    pNewData->pNext = (CUserData*)m_Head.getNext();
+    m_Head.pNext = pNewData;
+    return 1;
+}
 
 int CLinkedList::removeNode(char* pszName)
 {
-    USERDATA* pPrevNode = &m_Head;
-    USERDATA* pDelete = nullptr;
+    CUserData* pPrevNode = &m_Head;
+    CUserData* pDelete = nullptr;
 
-    while (pPrevNode->pNext != nullptr)
+    while (pPrevNode->getNext() != nullptr)
     {
         pDelete = pPrevNode->pNext;
 
-        if (strcmp(pDelete->szName, pszName) == 0)
+        if (strcmp(pDelete->getName(), pszName) == 0)
         {
             pPrevNode->pNext = pDelete->pNext;
-            free(pDelete);
+            delete pDelete;
 
             return 1;
         }
@@ -83,8 +95,8 @@ int CLinkedList::removeNode(char* pszName)
 
 void CLinkedList::releaseList()
 {
-    USERDATA* pTmp = getFirst();
-    USERDATA* pDelete = nullptr;
+    CUserData* pTmp = m_Head.pNext;
+    CUserData* pDelete = nullptr;
 
     while (pTmp != nullptr)
     {
@@ -94,14 +106,13 @@ void CLinkedList::releaseList()
         free(pDelete);
     }
 
-    memset(&m_Head, 0, sizeof(USERDATA));
+    m_Head.pNext = nullptr;
 }
 
 
 int CLinkedList::loadList()
 {
     FILE* fp = nullptr;
-    USERDATA user = { 0 };
 
     fopen_s(&fp, DATA_FILE_NAME, "rb");
 
@@ -110,8 +121,7 @@ int CLinkedList::loadList()
 
     releaseList();
 
-    while (fread(&user, sizeof(USERDATA), 1, fp))
-        addNewNode(user.szName, user.szPhone);
+    while (addNewNode(fp));
 
     fclose(fp);
 
@@ -122,7 +132,7 @@ int CLinkedList::loadList()
 int CLinkedList::saveList()
 {
     FILE* fp = nullptr;
-    USERDATA* pTmp = getFirst();
+    CUserData* pTmp = m_Head.pNext;
 
     fopen_s(&fp, DATA_FILE_NAME, "wb");
 
@@ -136,7 +146,7 @@ int CLinkedList::saveList()
 
     while (pTmp != nullptr)
     {
-        if (fwrite(pTmp, sizeof(USERDATA), 1, fp) != 1)
+        if (pTmp->write(fp) != 1)
         {
             // printf("ERROR: %s에 대한 정보를 저장하는 데 실패했습니다.\n", pTmp->szName);
             return 0;
@@ -148,4 +158,13 @@ int CLinkedList::saveList()
     fclose(fp);
 
     return 1;
+}
+
+
+const CUserData* CLinkedList::moveNext(const CUserData* pCurNode) 
+{
+    if (pCurNode != nullptr)
+    {
+        return pCurNode->getNext();
+    }
 }

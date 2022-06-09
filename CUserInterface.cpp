@@ -40,7 +40,7 @@ void CUserInterface::add()
 void CUserInterface::search()
 {
 	char szName[32] = { 0 };
-	CLinkedList::USERDATA* pNode = nullptr;
+	const CUserData* pNode = nullptr;
 
 	printf("Input name : ");
 	flush_stdin();
@@ -49,7 +49,7 @@ void CUserInterface::search()
 	pNode = m_list.findNode(szName);
 	if (pNode != nullptr)
 	{
-		printf("[%p] %s\t%s [%p]\n", pNode, pNode->szName, pNode->szPhone, pNode->pNext);
+		printf("[%p] %s\t%s [%p]\n", pNode, pNode->getName(), pNode->getPhone(), pNode->getNext());
 	}
 	else
 	{
@@ -62,12 +62,12 @@ void CUserInterface::search()
 
 void CUserInterface::printAll()
 {
-	CLinkedList::USERDATA* pTmp = m_list.getFirst();
+	const CUserData* pTmp = m_list.getFirst();
 	while (pTmp != nullptr)
 	{
-		printf("[%p] %s\t%s [%p]\n", pTmp, pTmp->szName, pTmp->szPhone, pTmp->pNext);
+		printf("[%p] %s\t%s [%p]\n", pTmp, pTmp->getName(), pTmp->getPhone(), pTmp->getNext());
 
-		pTmp = pTmp->pNext;
+		pTmp = m_list.moveNext(pTmp);
 	}
 
 	_getch();

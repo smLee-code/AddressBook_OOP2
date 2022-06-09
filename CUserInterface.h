@@ -1,5 +1,6 @@
 #pragma once
 #include "CLinkedList.h"
+#include "CUserData.h"
 
 class CUserInterface
 {

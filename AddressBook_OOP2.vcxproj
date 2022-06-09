@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="AddressBook_OOP2.cpp" />
     <ClCompile Include="CLinkedList.cpp" />
+    <ClCompile Include="CUserData.cpp" />
     <ClCompile Include="CUserInterface.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h" />
+    <ClInclude Include="CUserData.h" />
     <ClInclude Include="CUserInterface.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
