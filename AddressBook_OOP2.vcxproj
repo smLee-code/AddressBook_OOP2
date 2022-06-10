@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="AddressBook_OOP2.cpp" />
     <ClCompile Include="CLinkedList.cpp" />
+    <ClCompile Include="CNode.cpp" />
     <ClCompile Include="CUserData.cpp" />
     <ClCompile Include="CUserInterface.cpp" />
     <ClCompile Include="pch.cpp">
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h" />
+    <ClInclude Include="CNode.h" />
     <ClInclude Include="CUserData.h" />
     <ClInclude Include="CUserInterface.h" />
     <ClInclude Include="pch.h" />

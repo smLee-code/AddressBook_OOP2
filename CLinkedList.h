@@ -1,24 +1,27 @@
 #pragma once
+#include "CNode.h"
 #include "CUserData.h"
 
 class CLinkedList
 {
 private:
-	CUserData m_Head;
+	CNode m_Head;
 
 public:
 	CLinkedList();
 	~CLinkedList();
 
-	const CUserData* getFirst();
+	const CNode* getFirst();
 
-	const CUserData* findNode(char* pszName);
-	int addNewNode(char* pszName, char* pszPhone);
+	const CNode* findNode(const char* pszKey);
+	int addNewNode(CNode* pNewNode);
 	int addNewNode(FILE* fp);
-	int removeNode(char* pszName);
+	int removeNode(char* pszKey);
+
 	void releaseList();
 	int loadList();
 	int saveList();
-	const CUserData* moveNext(const CUserData* pCurNode);
+
+	const CNode* moveNext(const CNode* pCurNode);
 };
 

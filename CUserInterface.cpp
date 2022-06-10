@@ -33,7 +33,16 @@ void CUserInterface::add()
 	printf("Input phone number : ");
 	gets_s(szPhone, sizeof(szPhone));
 
-	m_list.addNewNode(szName, szPhone);
+	CUserData* pNewData = new CUserData();
+	pNewData->setName(szName);
+	pNewData->setPhone(szPhone);
+
+	if (m_list.addNewNode(pNewData) == 0)
+	{
+		puts("ERROR: 이름이 같은 데이터가 이미 존재합니다.");
+		_getch();
+		delete pNewData;
+	}
 }
 
 
@@ -46,7 +55,7 @@ void CUserInterface::search()
 	flush_stdin();
 	gets_s(szName, sizeof(szName));
 
-	pNode = m_list.findNode(szName);
+	pNode = (const CUserData*)m_list.findNode(szName);
 	if (pNode != nullptr)
 	{
 		printf("[%p] %s\t%s [%p]\n", pNode, pNode->getName(), pNode->getPhone(), pNode->getNext());
@@ -62,12 +71,12 @@ void CUserInterface::search()
 
 void CUserInterface::printAll()
 {
-	const CUserData* pTmp = m_list.getFirst();
+	const CUserData* pTmp = (const CUserData*)m_list.getFirst();
 	while (pTmp != nullptr)
 	{
 		printf("[%p] %s\t%s [%p]\n", pTmp, pTmp->getName(), pTmp->getPhone(), pTmp->getNext());
 
-		pTmp = m_list.moveNext(pTmp);
+		pTmp = (const CUserData*)m_list.moveNext(pTmp);
 	}
 
 	_getch();

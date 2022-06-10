@@ -15,19 +15,19 @@ CLinkedList::~CLinkedList()
 }
 
 
-const CUserData* CLinkedList::getFirst()
+const CNode* CLinkedList::getFirst()
 {
     return m_Head.getNext();
 }
 
 
-const CUserData* CLinkedList::findNode(char* pszName)
+const CNode* CLinkedList::findNode(const char* pszKey)
 {
-    const CUserData* pTmp = m_Head.getNext();
+    const CNode* pTmp = m_Head.getNext();
 
     while (pTmp != nullptr) 
     {
-        if (strcmp(pTmp->getName(), pszName) == 0)
+        if (strcmp(pTmp->getKey(), pszKey) == 0)
             return pTmp;
             
         pTmp = moveNext(pTmp);
@@ -37,26 +37,19 @@ const CUserData* CLinkedList::findNode(char* pszName)
 }
 
 
-int CLinkedList::addNewNode(char* pszName, char* pszPhone)
+int CLinkedList::addNewNode(CNode* pNewNode)
 {
-    CUserData* pNewUser = nullptr;
-
-    if (findNode(pszName) != nullptr)
+    if (findNode(pNewNode->getKey()) != NULL)
         return 0;
 
-    pNewUser = new CUserData();
-
-    pNewUser->setName(pszName);
-    pNewUser->setPhone(pszPhone);
-
-    pNewUser->pNext = (CUserData*)m_Head.getNext();
-    m_Head.pNext = pNewUser;
+    pNewNode->pNext = (CNode*)m_Head.getNext();
+    m_Head.pNext = pNewNode;
     return 1;
 }
 
 int CLinkedList::addNewNode(FILE* fp)
 {
-    CUserData* pNewData = new CUserData;
+    CNode* pNewData = new CUserData;
 
     if (!pNewData->read(fp))
     {
@@ -64,21 +57,21 @@ int CLinkedList::addNewNode(FILE* fp)
         return 0;   
     }
 
-    pNewData->pNext = (CUserData*)m_Head.getNext();
+    pNewData->pNext = (CNode*)m_Head.getNext();
     m_Head.pNext = pNewData;
     return 1;
 }
 
-int CLinkedList::removeNode(char* pszName)
+int CLinkedList::removeNode(char* pszKey)
 {
-    CUserData* pPrevNode = &m_Head;
-    CUserData* pDelete = nullptr;
+    CNode* pPrevNode = &m_Head;
+    CNode* pDelete = nullptr;
 
     while (pPrevNode->getNext() != nullptr)
     {
         pDelete = pPrevNode->pNext;
 
-        if (strcmp(pDelete->getName(), pszName) == 0)
+        if (strcmp(pDelete->getKey(), pszKey) == 0)
         {
             pPrevNode->pNext = pDelete->pNext;
             delete pDelete;
@@ -95,8 +88,8 @@ int CLinkedList::removeNode(char* pszName)
 
 void CLinkedList::releaseList()
 {
-    CUserData* pTmp = m_Head.pNext;
-    CUserData* pDelete = nullptr;
+    CNode* pTmp = m_Head.pNext;
+    CNode* pDelete = nullptr;
 
     while (pTmp != nullptr)
     {
@@ -132,7 +125,7 @@ int CLinkedList::loadList()
 int CLinkedList::saveList()
 {
     FILE* fp = nullptr;
-    CUserData* pTmp = m_Head.pNext;
+    CNode* pTmp = m_Head.pNext;
 
     fopen_s(&fp, DATA_FILE_NAME, "wb");
 
@@ -161,10 +154,12 @@ int CLinkedList::saveList()
 }
 
 
-const CUserData* CLinkedList::moveNext(const CUserData* pCurNode) 
+const CNode* CLinkedList::moveNext(const CNode* pCurNode) 
 {
     if (pCurNode != nullptr)
     {
         return pCurNode->getNext();
     }
+
+    return nullptr;
 }

@@ -1,6 +1,7 @@
 #pragma once
+#include "CNode.h"
 
-class CUserData
+class CUserData : public CNode
 {
 	friend class CLinkedList;
 
@@ -12,7 +13,6 @@ public:
 	};
 
 private:
-	CUserData* pNext;
 	USERDATA m_Data;
 
 public:
@@ -21,11 +21,11 @@ public:
 
 	const char* getName() const { return m_Data.szName; }
 	const char* getPhone() const { return m_Data.szPhone; }
-	const CUserData* getNext() const { return pNext; }
 	void setName(const char* pszName);
 	void setPhone(const char* pszPhone);
 
-	int read(FILE* fp);
-	int write(FILE* fp);
+	virtual int read(FILE* fp);
+	virtual int write(FILE* fp);
+	virtual const char* getKey() const;
 };
 

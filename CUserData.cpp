@@ -5,7 +5,6 @@
 CUserData::CUserData()
 {
 	memset(&m_Data, 0, sizeof(USERDATA));
-	pNext = nullptr;
 }
 
 CUserData::~CUserData()
@@ -28,13 +27,17 @@ void CUserData::setPhone(const char* pszPhone)
 
 int CUserData::read(FILE* fp)
 {
-	int result = fread(&m_Data, sizeof(USERDATA), 1, fp);
-	pNext = nullptr;
-
-	return result;
+	CNode::read(fp);
+	return fread(&m_Data, sizeof(USERDATA), 1, fp);
 }
 
 int CUserData::write(FILE* fp)
 {
+	CNode::write(fp);
 	return fwrite(&m_Data, sizeof(USERDATA), 1, fp);
+}
+
+const char* CUserData::getKey() const
+{
+	return m_Data.szName;
 }
